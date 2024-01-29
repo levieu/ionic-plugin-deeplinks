@@ -37,14 +37,16 @@
 
 - (BOOL)handleLink:(NSURL *)url {
   NSLog(@"IonicDeepLinkPlugin: Handle link (internal) %@", url);
-  
-   NSString *compURLString = (url.absoluteString == nil ? [NSMutableString new] : [[ [url.absoluteString mutableCopy]
-            stringByReplacingOccurrencesOfString: @"noipaCIEID:" withString:@"noipaCIEID://"]
-            stringByReplacingOccurrencesOfString: @":////" withString:@"://"]);
-    CFStringRef cfUrlString = (__bridge CFStringRef)compURLString;
-    CFURLRef cfUrl = CFURLCreateWithString(NULL, cfUrlString, NULL);
-    NSURL *URL = (__bridge_transfer NSURL *)cfUrl;
-    
+
+  NSString* urlScheme = [[self.commandDelegate settings] objectForKey:@"url_scheme"];
+
+  NSString *compURLString = (url.absoluteString == nil ? [NSMutableString new] : [[url.absoluteString mutableCopy] 
+    stringByReplacingOccurrencesOfString:[NSString stringWithFormat:@"%@:", urlScheme] withString:[NSString stringWithFormat:@"%@://", urlScheme]]
+    stringByReplacingOccurrencesOfString:@":////" withString:@"://"]);
+
+  CFStringRef cfUrlString = (__bridge CFStringRef)compURLString;
+  CFURLRef cfUrl = CFURLCreateWithString(NULL, cfUrlString, NULL);
+  NSURL *URL = (__bridge_transfer NSURL *)cfUrl;
 
   if(![self checkUrl:URL]) {
     return NO;
