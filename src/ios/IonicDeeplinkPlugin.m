@@ -40,7 +40,7 @@
 
   NSString* urlScheme = [[self.commandDelegate settings] objectForKey:@"url_scheme"];
 
-  NSString *compURLString = (url.absoluteString == nil ? [NSMutableString new] : [[url.absoluteString mutableCopy] 
+  NSString *compURLString = (url.absoluteString == nil ? [NSMutableString new] : [[[url.absoluteString mutableCopy] 
     stringByReplacingOccurrencesOfString:[NSString stringWithFormat:@"%@:", urlScheme] withString:[NSString stringWithFormat:@"%@://", urlScheme]]
     stringByReplacingOccurrencesOfString:@":////" withString:@"://"]);
 
