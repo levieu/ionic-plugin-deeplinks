@@ -38,11 +38,19 @@
 - (BOOL)handleLink:(NSURL *)url {
   NSLog(@"IonicDeepLinkPlugin: Handle link (internal) %@", url);
   
-  if(![self checkUrl:url]) {
+   NSString *compURLString = (url.absoluteString == nil ? [NSMutableString new] : [[ [url.absoluteString mutableCopy]
+            stringByReplacingOccurrencesOfString: @"noipaCIEID:" withString:@"noipaCIEID://"]
+            stringByReplacingOccurrencesOfString: @":////" withString:@"://"]);
+    CFStringRef cfUrlString = (__bridge CFStringRef)compURLString;
+    CFURLRef cfUrl = CFURLCreateWithString(NULL, cfUrlString, NULL);
+    NSURL *URL = (__bridge_transfer NSURL *)cfUrl;
+    
+
+  if(![self checkUrl:URL]) {
     return NO;
   }
 
-  _lastEvent = [self createResult:url];
+  _lastEvent = [self createResult:URL];
 
   [self sendToJs];
 
